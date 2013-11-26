@@ -110,6 +110,7 @@ def getPrime(n):
 def botmain(debug=False,dryrun=False):
     tw=twitter(debug=debug,dryrun=dryrun)
     store=idstore()
+    failed=0
     while True:
         l=tw.getMentions(since_id=store.get())
         logging.debug("Got %d mentions." % len(l))
@@ -131,9 +132,11 @@ def botmain(debug=False,dryrun=False):
             except:
                 pass
         if tw.isRestricted():
-            time.sleep(180)
+            time.sleep(600*failed)
+            failed+=1
         else:
-            time.sleep(10)
+            failed=0
+            time.sleep(60)
 
 if __name__=="__main__":
     logging.basicConfig(filename="debug.log",level=logging.DEBUG,
