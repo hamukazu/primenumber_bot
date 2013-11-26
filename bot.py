@@ -38,7 +38,11 @@ class twitter:
         l=[]
         c=0
         try:
-            for s in tweepy.Cursor(method,since_id=since_id).items():
+            if since_id=="" or since_id is None:
+                cur=tweepy.Cursor(method)
+            else:
+                cur=tweepy.Cursor(method,since_id=since_id)
+            for s in cur.items():
                 if c>=limit:
                     break
                 l.append(s)
@@ -126,7 +130,7 @@ def botmain(debug=False,dryrun=False):
                         store.set(a.id)
             except:
                 pass
-        if tw.isRestricted:
+        if tw.isRestricted():
             time.sleep(180)
         else:
             time.sleep(10)
