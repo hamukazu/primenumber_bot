@@ -63,13 +63,14 @@ class twitter:
         return self.getTimeline(self._api.home_timeline,limit,since_id)
 
     def tweet(self,text,id):
-        logging.info("Tweeted: " +text)
         if not self._dryrun:
             try:
                 self._api.update_status(text,in_reply_to_status_id=id)
+                logging.info("Tweeted: " +text)
             except Exception as e:
                 self._error=e[0][0]["code"]
                 logging.error("** Exception at tweeting")
+                logging.error("Tried to tweet: " +text)
                 logging.error(str(e))
                 return False
         return True
