@@ -101,6 +101,8 @@ class idstore:
 
 
 def getPrime(n):
+    if n<=2:
+        return 2
     if n%2==0:
         n+=1
     while not prime.isPrime(n):
@@ -120,16 +122,24 @@ def botmain(debug=False,dryrun=False):
             t=re.sub("[^0-9]*([0-9]+)[^0-9]*",r'\1',a.text).strip()
             try:
                 n=int(t)
-                if n<=1:
-                    continue
                 p=getPrime(n)
-                r=tw.tweet("@"+a.author.screen_name+" "+str(p),a.id)
-                if r:
-                    store.set(a.id)
-                    time.sleep(180)
-                else:
-                    if tw.getErrorCode()==187:
+                repeat=True
+                while repeat:
+                    r=tw.tweet("@"+a.author.screen_name+" "+str(p),a.id)
+                    repeat=False
+                    if r:
                         store.set(a.id)
+                        time.sleep(180)
+                    else:
+                        err=tw.getErrorCode()
+                        if err==186: # exeed 140 chars
+                            r=tw.tweet("@"+a.author.screen_name
+                                +" Sorry, too long to tweet.",a.id)
+                        elif err==187: # duplicated tweet
+                            store.set(a.id)
+                        else:
+                            time.sleep(600)
+                            repeat=True
             except:
                 pass
         if tw.isRestricted():
