@@ -119,7 +119,9 @@ def botmain(debug=False,dryrun=False):
         logging.debug("Got %d mentions." % len(l))
         for a in l:
             logging.debug(a.author.screen_name+":"+ a.text)
-            t=re.sub(".*(-?[0-9]+)[^0-9]*",r'\1',a.text).strip()
+            ss=re.search("-?[0-9]+",a.text)
+            i,j=ss.span()
+            t=a.text[i:j]
             try:
                 n=int(t)
                 p=getPrime(n)
