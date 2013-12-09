@@ -120,36 +120,37 @@ def botmain(debug=False,dryrun=False):
         for a in l:
             logging.debug(a.author.screen_name+":"+ a.text)
             ss=re.search("-?[0-9]+",a.text)
-            i,j=ss.span()
-            t=a.text[i:j]
-            try:
-                n=int(t)
-                p=getPrime(n)
-                repeat=True
-                while repeat:
-                    r=tw.tweet("@"+a.author.screen_name+" "+str(p),a.id)
-                    repeat=False
-                    if r:
-                        store.set(a.id)
-                        time.sleep(180)
-                    else:
-                        err=tw.getErrorCode()
-                        if err==186: # exeed 140 chars
-                            r=tw.tweet("@"+a.author.screen_name
-                                +" Sorry, too long to tweet.",a.id)
-                        elif err==187: # duplicated tweet
+            if ss is not None:
+                i,j=ss.span()
+                t=a.text[i:j]
+                try:
+                    n=int(t)
+                    p=getPrime(n)
+                    repeat=True
+                    while repeat:
+                        r=tw.tweet("@"+a.author.screen_name+" "+str(p),a.id)
+                        repeat=False
+                        if r:
                             store.set(a.id)
+                            time.sleep(180)
                         else:
-                            time.sleep(600)
-                            repeat=True
-            except:
-                pass
-        if tw.isRestricted():
-            time.sleep(600*failed)
-            failed+=1
-        else:
-            failed=0
-            time.sleep(60)
+                            err=tw.getErrorCode()
+                            if err==186: # exeed 140 chars
+                                r=tw.tweet("@"+a.author.screen_name
+                                    +" Sorry, too long to tweet.",a.id)
+                            elif err==187: # duplicated tweet
+                                store.set(a.id)
+                            else:
+                                time.sleep(600)
+                                repeat=True
+                except:
+                    pass
+            if tw.isRestricted():
+                time.sleep(600*failed)
+                failed+=1
+            else:
+                failed=0
+                time.sleep(60)
 
 if __name__=="__main__":
     logging.basicConfig(filename="debug.log",level=logging.DEBUG,
