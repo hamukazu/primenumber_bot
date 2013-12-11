@@ -135,10 +135,12 @@ def botmain(debug=False,dryrun=False):
                             time.sleep(180)
                         else:
                             err=tw.getErrorCode()
+                            logging.debug("Error code :%d",err)
                             if err==186: # exeed 140 chars
                                 r=tw.tweet("@"+a.author.screen_name
                                     +" Sorry, too long to tweet.",a.id)
                             elif err==187: # duplicated tweet
+                                logging.debug("Duplicated")
                                 store.set(a.id)
                             else:
                                 time.sleep(600)
