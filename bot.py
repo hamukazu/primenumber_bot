@@ -8,6 +8,8 @@ import prime
 import time
 import twikey
 import logging
+import sys
+import traceback
 
 class mysqlsetting:
     def __init__(self):
@@ -50,10 +52,14 @@ class twitter:
             l.reverse()
             self._restricted=False
         except Exception as e:
-            self._error=e[0][0]["code"]
             self._restricted=True
             logging.error("** Exception at getting timeline.")
             logging.error(str(e))
+            try:
+                self._error=e[0][0]["code"]
+                logging.error(self._error)
+            except:
+                self._error=-1
         return l
         
     def getMentions(self,limit=100,since_id=None):
@@ -68,7 +74,10 @@ class twitter:
                 self._api.update_status(text,in_reply_to_status_id=id)
                 logging.info("Tweeted: " +text)
             except Exception as e:
-                self._error=e[0][0]["code"]
+                try:
+                    self._error=e[0][0]["code"]
+                except:
+                    self._error=-1
                 logging.error("** Exception at tweeting")
                 logging.error("Tried to tweet: " +text)
                 logging.error(str(e))
@@ -147,12 +156,12 @@ def botmain(debug=False,dryrun=False):
                                 repeat=True
                 except:
                     pass
-            if tw.isRestricted():
-                time.sleep(600*failed)
-                failed+=1
-            else:
-                failed=0
-                time.sleep(60)
+        if tw.isRestricted():
+            time.sleep(600*failed)
+            failed+=1
+        else:
+            failed=0
+            time.sleep(60)
 
 if __name__=="__main__":
     logging.basicConfig(filename="debug.log",level=logging.DEBUG,
