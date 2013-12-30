@@ -5,7 +5,7 @@ import random
 
 
 SMALL_PRIMES=[]
-LIMIT_SMALL_PRIMES=1000
+LIMIT_SMALL_PRIMES=100
 
 
 def prepare():
@@ -43,10 +43,21 @@ def isPrime(n):
     while d%2==0:
         d=d/2
         s+=1
-    for _ in xrange(1000):
+    for _ in xrange(100):
         if not probPrime(n,random.randrange(2,n),d,s):
             return False
     return True
+
+
+def getPrime(n):
+    if n<=2:
+        return 2
+    if n%2==0:
+        n+=1
+    while not isPrime(n):
+        n+=2
+    return n
+
 
 
 def main():

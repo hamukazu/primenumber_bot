@@ -109,15 +109,6 @@ class idstore:
         self._db.commit()
 
 
-def getPrime(n):
-    if n<=2:
-        return 2
-    if n%2==0:
-        n+=1
-    while not prime.isPrime(n):
-        n+=2
-    return n
-
 
 def botmain(debug=False,dryrun=False):
     tw=twitter(debug=debug,dryrun=dryrun)
@@ -134,7 +125,7 @@ def botmain(debug=False,dryrun=False):
                 t=a.text[i:j]
                 try:
                     n=int(t)
-                    p=getPrime(n)
+                    p=prime.getPrime(n)
                     repeat=True
                     while repeat:
                         r=tw.tweet("@"+a.author.screen_name+" "+str(p),a.id)
@@ -148,6 +139,7 @@ def botmain(debug=False,dryrun=False):
                             if err==186: # exeed 140 chars
                                 r=tw.tweet("@"+a.author.screen_name
                                     +" Sorry, too long to tweet.",a.id)
+                                store.set(a.id)
                             elif err==187: # duplicated tweet
                                 logging.debug("Duplicated")
                                 store.set(a.id)
