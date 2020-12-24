@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import sys
 import random
 
@@ -10,7 +9,7 @@ LIMIT_SMALL_PRIMES=100
 
 def prepare():
     f=[True]*LIMIT_SMALL_PRIMES
-    for i in xrange(2,LIMIT_SMALL_PRIMES):
+    for i in range(2,LIMIT_SMALL_PRIMES):
         if f[i]:
             SMALL_PRIMES.append(i)
             j=i
@@ -24,7 +23,7 @@ def probPrime(n,a,d,s):
     if x==1:
         return True
     else:
-        for i in xrange(s):
+        for i in range(s):
             if x==n-1:
                 return True
             x=(x*x)%n
@@ -41,9 +40,9 @@ def isPrime(n):
     d=n-1
     # decomposition so that n=2^s d
     while d%2==0:
-        d=d/2
+        d=d//2
         s+=1
-    for _ in xrange(100):
+    for _ in range(100):
         if not probPrime(n,random.randrange(2,n),d,s):
             return False
     return True
@@ -62,7 +61,7 @@ def getPrime(n):
 
 def main():
     if len(sys.argv)<3:
-        print "Usage"
+        print("Usage")
         return
     n1=int(sys.argv[1])
     n2=int(sys.argv[2])
@@ -70,7 +69,7 @@ def main():
         n1+=1
     while n1<n2:
         if isPrime(n1):
-            print n1
+            print(n1)
         n1+=2
 
 prepare()
