@@ -123,7 +123,7 @@ def botmain(debug=False, dryrun=False):
     logging.debug("Got %d mentions." % len(l))
     for a in l:
         logging.debug(a.author.screen_name + ":" + a.text)
-        ss = re.search("-?[0-9]+", a.text.strip())
+        ss = re.search("-?[0-9]+", a.text)
         if ss is not None:
             i, j = ss.span()
             t = a.text[i:j]
